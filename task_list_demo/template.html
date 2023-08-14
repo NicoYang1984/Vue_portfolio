@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" href="./css/index.css" />
+<title>Task List</title>
+<link rel="icon" href="./favicon.ico" type="image/x-icon">
+<link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
+
+</head>
+<body>
+
+<!-- 主体区域 -->
+<section id="app">
+  <!-- 输入框 -->
+  <header class="header">
+    <h1>Andate Task List</h1>
+    <input placeholder="Enter the task" class="new-todo" v-model="todoName"/>
+    <button class="add" @click = add(todoName)>Add Task</button>
+  </header>
+  <!-- 列表区域 -->
+  <section class="main">
+    <ul class="todo-list">
+      <!-- 渲染列表：v-for -->
+      <li class="todo" v-for="(item,index) in list">
+        <div class="view">
+          <span class="index">{{index+1}}.</span> <label>{{item.name}}</label>
+          <!-- item.id和index的区别：
+          前者会根据数据的删除而变化，而后者不会 -->
+
+          <!-- 绑定按钮：@click绑定事件，利用id号传入参数来确定删除的具体参数-->
+          <button class="destroy" @click="del(item.id)"></button>
+
+        </div>
+      </li>
+    </ul>
+  </section>
+  <!-- 统计和清空 -->
+  <footer class="footer" v-show="list.length > 0">
+    <!-- 当没有任务项时隐藏下拉栏 -->
+    <!-- 统计 -->
+    <span class="todo-count">Add up:<strong> {{list.length}} </strong></span>
+    <!-- 清空 -->
+    <button class="clear-completed" @click = "clear()">
+      Clear Tasks
+    </button>
+  </footer>
+</section>
+
+<!-- 底部 -->
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script>
+
+  const app = new Vue({
+    el: '#app',
+    data: {
+      todoName:"",//新建变量，用于绑定输入框
+      list:[//制作数据列表
+        {id:1,name:"Reading for 4 hours."},
+        {id:2,name:"Practing piano for 2 hours."},
+        {id:3,name:"Dating tonight."},
+        {id:4,name:"Coding for 3 hours."}
+      ]
+    },
+    methods:{//易错：methods应有s
+      del(id){
+        console.log(id)
+        // 删除：使用过滤器的思想
+        this.list = this.list.filter(item => item.id != id)
+      },
+      add(todoName){
+        if(todoName.trim() === ''){//检测输入合法性：用trim检测空格
+          alert("Please enter the task!")
+        }
+        else{//将输入值添加到列表变量中：unshift（默认添加到最前面）
+          this.list.unshift({
+            id:1,
+            name:todoName
+            //也可以不传参进add，直接写name:this.todoName
+          })
+          this.todoName=''//由于双向绑定了，不清空则会
+        }
+       
+      },
+      clear(){//清空
+        this.list = []
+      }
+    }
+  })
+
+</script>
+</body>
+</html>
